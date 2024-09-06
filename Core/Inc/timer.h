@@ -11,7 +11,7 @@
 #include "stdbool.h"
 #include "stm32f1xx_hal.h"
 
-// struct timing {
+// struct timing_type {
 // 	uint16_t		ticks10ms;
 // 	uint16_t		ticks100ms;
 // 	uint16_t		ticks500ms;
@@ -40,12 +40,12 @@ typedef struct timing_type {
 	uint16_t		timer_100ms_cntr;
 	bool			timer_100ms_running;
 
-} timing;
+} timing_type;
 
 /**
  * TODO NEED TO COMMENT
- */
-void blocking_us_delay (uint16_t us);
+//  */
+// void blocking_us_delay (uint16_t us);
 
 /**
  * @brief
@@ -69,7 +69,7 @@ void blocking_us_delay (uint16_t us);
  * @brief
  * TODO need to comment
  */
-void init_timer (timing * tim);
+void init_timer (timing_type * tim);
 
 
 #endif /* INC_TIMER_H_ */

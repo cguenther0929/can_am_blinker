@@ -27,8 +27,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-uart_type        uart; 
-timing_type       tim;
+extern uart_type        uart; 
+extern timing_type      tim;
 
 /* USER CODE END PTD */
 
@@ -107,12 +107,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   init_timer (&tim);
-
-  // TODO: do we need to init the UART?
-
   HAL_TIM_Base_Start_IT(&htim6);
-
-  HAL_UART_Receive_IT(&huart1, &uart->rxchar, 1);  // UART to console interface
 
   /* USER CODE END 2 */
 
@@ -124,11 +119,15 @@ int main(void)
      * Message handling
      */
     if (uart.byte_counter >= MAX_RX_BUF_INDEX) {
-      ResetRxBuffer(&uart);                        //Something went wrong, reset the RX buffer.
+      ResetRxBuffer(uart);                        //Something went wrong, reset the RX buffer.
     }
     else if(uart.consumer_index != uart.producer_index) {             //We have unprocessed data when indices do not agree
-      HandleByte(&uart);
+      HandleByte(& uart);
     }
+
+
+
+
 
     //TODO: we should never get here ... Delete?
     // if(uart.validmsg == true) {     //A valid message confirmed in buffer
@@ -169,7 +168,8 @@ int main(void)
 
     if(tim.flag_500ms_tick) {
       tim.flag_500ms_tick = false;
-      HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
+      // TODO: need to toggle the health LED here.  
+      // HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
       // HAL_GPIO_TogglePin(EXT_LED_1_GPIO_Port, EXT_LED_1_Pin); // External GRN LED
     }
 
@@ -417,23 +417,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		}
 }
 
-/********************************************//**
+/**********************************************
  *  @brief Handle UART RX interrupts
  ***********************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	
+	// uart_type uart;
+
   /**
    * Console UART Interface
    * 
    */
   if(huart == &huart1) {
-
-    uart.rxbuf[uart.producer_index] = uart.rxchar;          // Load this byte into rx buffer  
+    uart.rxbuf[uart.producer_index] = uart.rxchar;          // Load this byte into rx buffer
     uart.byte_counter++;                                                   //Increase data counter
     (uart.producer_index >= MAX_RX_BUF_INDEX) ? (uart.producer_index = 0):(uart.producer_index++);       
 		HAL_UART_Receive_IT(&huart1, &uart.rxchar, 1);
 	}
-
+}
 /* USER CODE END 4 */
 
 /**

@@ -8,11 +8,36 @@
 #ifndef INC_UART_H_
 #define INC_UART_H_
 
+/* Message Buffer Sizes */
+#define MAX_TX_ELEMENTS             16                          // Maximum size of transmit message
+#define MAX_RX_BUF_INDEX            32                          // Define array element size 
+#define MAX_ELEMENTS                (MAX_RX_BUF_INDEX + 1)      // Number of elements that can be stored in buffer
+
 // #include "stdint.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include "main.h"
+#include "console.h"
+
+// typedef struct uart_type{
+//     char        rxbuf[MAX_ELEMENTS];            // Ring buffer for serial receiver
+//     char        rxchar;                         // Supported mainly for calibration routine 
+//     uint8_t     producer_index;                 // Use this to point to where the next received data byte shall go
+//     uint8_t     consumer_index;                 // Use this as the consumer of data in the buffer
+//     uint8_t     data_index;                     // Location where message data starts
+//     uint8_t     data_end;                       // Location where message data ends    
+//     uint8_t     msg_state;                      // Keep track of what state we are in
+//     uint8_t     msg_len;                        // Keep track of the message length field
+//     uint8_t     byte_counter;                   // Additional variable for tracking number of bytes that are needing to be processed
+//     uint8_t     len_verify;                     // Used to validate length byte received
+//     uint8_t     msg_id;                         // Store the ID of the message
+
+//     bool        errorflag;                      // Currently used to indicate out-of-bounds range request on power 10 lookup table
+//     bool        validmsg;                       // Flag to mark that a valid message has been received
+//     bool        inmenu;                         // This flag will indicate if we're in the menu
+// } uart_type;
+
 
 #include "stm32f1xx_hal.h"
 extern UART_HandleTypeDef   huart1;
@@ -28,10 +53,6 @@ extern UART_HandleTypeDef   huart1;
 #define ENTER_KEY                   0x0D     // ASCII code for enter key
 
 
-/* Message Buffer Sizes */
-#define MAX_TX_ELEMENTS             16                          // Maximum size of transmit message
-#define MAX_RX_BUF_INDEX            32                          // Define array element size 
-#define MAX_ELEMENTS                (MAX_RX_BUF_INDEX + 1)      // Number of elements that can be stored in buffer
 
 /* Message IDs */
 #define ID_FUSESTATUS               0x01
@@ -52,23 +73,6 @@ extern UART_HandleTypeDef   huart1;
 #define LENRXED                     0x04        // State variable to indicate that we have received the length byte 
 
  
-typedef struct uart_type{
-    char        rxbuf[MAX_ELEMENTS];            // Ring buffer for serial receiver
-    char        rxchar;                         // Supported mainly for calibration routine 
-    uint8_t     producer_index;                 // Use this to point to where the next received data byte shall go
-    uint8_t     consumer_index;                 // Use this as the consumer of data in the buffer
-    uint8_t     data_index;                     // Location where message data starts
-    uint8_t     data_end;                       // Location where message data ends    
-    uint8_t     msg_state;                      // Keep track of what state we are in
-    uint8_t     msg_len;                        // Keep track of the message length field
-    uint8_t     byte_counter;                   // Additional variable for tracking number of bytes that are needing to be processed
-    uint8_t     len_verify;                     // Used to validate length byte received
-    uint8_t     msg_id;                         // Store the ID of the message
-
-    bool        errorflag;                      // Currently used to indicate out-of-bounds range request on power 10 lookup table
-    bool        validmsg;                       // Flag to mark that a valid message has been received
-    bool        inmenu;                         // This flag will indicate if we're in the menu
-};
 
 
 /*!
@@ -212,13 +216,13 @@ void ClearLine( void );
  * 
  * returns: Nothing 
  */
-void ResetRxBuffer(* uart);
+void ResetRxBuffer(uart_type * uart);
 
 //TODO: need to comment
-void IncrementConsumer(* uart); 
+void IncrementConsumer(uart_type * uart); 
 
 //TODO: need to comment 
-void HandleByte(* uart);
+void HandleByte(uart_type * uart);
 
 //TODO: remove?  
 /*

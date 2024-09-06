@@ -13,65 +13,60 @@
 
 #include "console.h"            //Include file to support console
 
-uart_type           uart; 
-timing_type         tim;
-// ad7888       a2d;               // Struct for all things A2D related 
-// fuse         fus;               // Struct for all things fuse related
-// timing       tim;
+extern uart_type           ut; 
+extern timing_type         tim;
 
-
-uint8_t getNumber_u8 (* uart ) {
+uint8_t getNumber_u8 (uart_type * ut ) {
     int number      = 0;
     uint8_t timeout     = 0;
 
-    ResetRxBuffer(&uart);
+    ResetRxBuffer(ut);
     
-    uart->rxchar = '\0';
-    while(uart->rxchar == '\0'){}                   // Wait for keyboard input 
+    ut->rxchar = '\0';
+    while(ut->rxchar == '\0'){}                   // Wait for keyboard input 
     
     while (timeout < 20) {
-        if(uart->rxchar == ENTER_KEY) break;
+        if(ut->rxchar == ENTER_KEY) break;
 
         HAL_Delay(100);          // Delay in ms 
         timeout++;
     }
 
-    sscanf(uart->rxbuf,"%d",&number);
+    sscanf(ut->rxbuf,"%d",&number);
 
     print_string("Number Received: ",0);
     print_unsigned_decimal((uint8_t)number, LF);
 
-    ResetRxBuffer(&uart);
+    ResetRxBuffer(ut);
     return(number);
 }
 
-
-float getNumber_float(* uart) {
+float getNumber_float(uart_type * ut) {
     float number        = 0;
     uint8_t timeout     = 0;
     
-    ResetRxBuffer(&uart);
+    ResetRxBuffer(ut);
     
-    uart->rxchar = '\0';
-    while(uart->rxchar == '\0'){}                   // Wait for keyboard input 
+    ut->rxchar = '\0';
+    while(ut->rxchar == '\0'){}                   // Wait for keyboard input 
     
     while (timeout < 80) {
         
-        if(uart->rxchar == ENTER_KEY) break;
+        if(ut->rxchar == ENTER_KEY) break;
 
         HAL_Delay(100);          // Delay in ms
         timeout++;
     }
 
-    sscanf(uart->rxbuf,"%f.3",&number);
+    sscanf(ut->rxbuf,"%f.3",&number);
     
-    ResetRxBuffer(&uart);
+    ResetRxBuffer(ut);
 
     return(number);
 
 }
 
-void MainMenu(* uart) {
+void MainMenu(uart_type * ut) {
     /*
      * This routine will be using the same buffer as what's 
      * used for the main application.  ResetRxBuffer() is called
@@ -87,15 +82,13 @@ void MainMenu(* uart) {
     // bool        temp_bool               = 0;
     float       temp_float              = 0.0;
     
-    uart->rxchar = '\0';                  
+    ut->rxchar = '\0';                  
     ResetTerminal();                            // Clear all the contents on the terminal
 
     
-    // blockingDelay10ms(1);
     HAL_Delay(1);
     CursorTopLeft();
     HAL_Delay(1);
-    // blockingDelay10ms(1);
 
     while(usr_number_u8 != 99) {
         InsertLineFeed(1);
@@ -113,7 +106,7 @@ void MainMenu(* uart) {
         InsertLineFeed(2);
         
         print_string("Enter Selection:  ",0);
-        usr_number_u8 = getNumber_u8(&uart);
+        usr_number_u8 = getNumber_u8(ut);
 
        
         switch(usr_number_u8) {
@@ -122,7 +115,7 @@ void MainMenu(* uart) {
                 InsertLineFeed(1);
                 InsertLineSeparator();
                 print_string("Need to implement something here...",0);
-                temp_float = getNumber_float();
+                temp_float = getNumber_float(ut);
                 InsertLineFeed(1);
                 print_string("Now I'm leaving...",0);
                 print_float(temp_float,LF);

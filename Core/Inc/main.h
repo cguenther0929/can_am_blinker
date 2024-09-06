@@ -38,6 +38,24 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef struct uart_type{
+    char        rxbuf[MAX_ELEMENTS];            // Ring buffer for serial receiver
+    char        rxchar;                         // Supported mainly for calibration routine 
+    uint8_t     producer_index;                 // Use this to point to where the next received data byte shall go
+    uint8_t     consumer_index;                 // Use this as the consumer of data in the buffer
+    uint8_t     data_index;                     // Location where message data starts
+    uint8_t     data_end;                       // Location where message data ends    
+    uint8_t     msg_state;                      // Keep track of what state we are in
+    uint8_t     msg_len;                        // Keep track of the message length field
+    uint8_t     byte_counter;                   // Additional variable for tracking number of bytes that are needing to be processed
+    uint8_t     len_verify;                     // Used to validate length byte received
+    uint8_t     msg_id;                         // Store the ID of the message
+
+    bool        errorflag;                      // Currently used to indicate out-of-bounds range request on power 10 lookup table
+    bool        validmsg;                       // Flag to mark that a valid message has been received
+    bool        inmenu;                         // This flag will indicate if we're in the menu
+} uart_type;
+
 
 /* USER CODE END ET */
 

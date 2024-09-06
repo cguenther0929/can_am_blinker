@@ -1,0 +1,15 @@
+../Core/Src/uart.c:16:6:print_float	3
+../Core/Src/uart.c:35:6:print_8b_binary_rep	4
+../Core/Src/uart.c:59:6:print_16b_binary_rep	4
+../Core/Src/uart.c:83:6:print_string	4
+../Core/Src/uart.c:102:6:print_unsigned_decimal	4
+../Core/Src/uart.c:126:6:ClearCursorUp	1
+../Core/Src/uart.c:133:6:ClearScreen	1
+../Core/Src/uart.c:139:6:ClearLine	1
+../Core/Src/uart.c:146:6:CursorTopLeft	1
+../Core/Src/uart.c:152:6:ResetTerminal	1
+../Core/Src/uart.c:158:6:InsertLineFeed	2
+../Core/Src/uart.c:169:6:InsertLineSeparator	1
+../Core/Src/uart.c:173:6:ResetRxBuffer	1
+../Core/Src/uart.c:180:6:HandleByte	4
+../Core/Src/uart.c:245:6:IncrementConsumer	3
