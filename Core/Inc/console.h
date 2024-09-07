@@ -21,7 +21,8 @@
 #include "uart.h"
 
 
-// extern uart_type        uart; 
+// typedef struct uart_type        uart
+// struct uart_type        uart; 
 
 extern UART_HandleTypeDef huart1;
 

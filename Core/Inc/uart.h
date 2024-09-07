@@ -13,7 +13,8 @@
 #define MAX_RX_BUF_INDEX            32                          // Define array element size 
 #define MAX_ELEMENTS                (MAX_RX_BUF_INDEX + 1)      // Number of elements that can be stored in buffer
 
-// #include "stdint.h"
+
+//TODO: Clean this entire file up + fix the comments
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -43,9 +44,9 @@ typedef struct uart_type{
 extern UART_HandleTypeDef   huart1;
 
 
-// ToDO Cleanup comment blocks and header def
-// TODO see console.c or .h
-// TODO Cleanup comments down below
+// TODO: Cleanup comment blocks and header def
+// TODO:  see console.c or .h
+// TODO: Cleanup comments down below
 
 /* Linefeed and Enter Key */
 #define LF                          1           //Define short hand for a line feed
@@ -75,26 +76,6 @@ extern UART_HandleTypeDef   huart1;
  
 
 
-/*!
- * Structure for UART members
- */
-// struct UARTMembers {
-//     char        rxbuf[MAX_ELEMENTS];            // Ring buffer for serial receiver
-//     char        rxchar;                         // Supported mainly for calibration routine 
-//     uint8_t     producer_index;                 // Use this to point to where the next received data byte shall go
-//     uint8_t     consumer_index;                 // Use this as the consumer of data in the buffer
-//     uint8_t     data_index;                     // Location where message data starts
-//     uint8_t     data_end;                       // Location where message data ends    
-//     uint8_t     msg_state;                      // Keep track of what state we are in
-//     uint8_t     msg_len;                        // Keep track of the message length field
-//     uint8_t     byte_counter;                   // Additional variable for tracking number of bytes that are needing to be processed
-//     uint8_t     len_verify;                     // Used to validate length byte received
-//     uint8_t     msg_id;                         // Store the ID of the message
-
-//     bool        errorflag;                      // Currently used to indicate out-of-bounds range request on power 10 lookup table
-//     bool        validmsg;                       // Flag to mark that a valid message has been received
-//     bool        inmenu;                         // This flag will indicate if we're in the menu
-// };
 
 
 /**
@@ -223,6 +204,33 @@ void IncrementConsumer(uart_type * uart);
 
 //TODO: need to comment 
 void HandleByte(uart_type * uart);
+
+
+/**
+* @brief Get unsigned (u8) number from user
+* @param: Void passed in
+* @retval uint8_t
+*/
+uint8_t getNumber_u8 (uart_type * uart);
+
+/**
+* @brief Get float number from user
+* @param: Void passed in
+* @retval User-defined float value
+*/
+float getNumber_float (uart_type * uart);
+
+
+/**
+* @brief Main implementation of command-line interface 
+* @param: Void passed in
+* @retval None
+*/
+void MainMenu(uart_type * uart);
+
+
+
+
 
 //TODO: remove?  
 /*

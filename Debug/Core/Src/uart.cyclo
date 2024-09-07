@@ -13,3 +13,6 @@
 ../Core/Src/uart.c:173:6:ResetRxBuffer	1
 ../Core/Src/uart.c:180:6:HandleByte	4
 ../Core/Src/uart.c:245:6:IncrementConsumer	3
+../Core/Src/uart.c:253:9:getNumber_u8	4
+../Core/Src/uart.c:278:7:getNumber_float	4
+../Core/Src/uart.c:306:6:MainMenu	8
