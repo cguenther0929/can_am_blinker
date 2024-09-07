@@ -21,9 +21,11 @@
 #include "uart.h"
 
 
-extern uart_type        uart; 
+// extern uart_type        uart; 
 
 extern UART_HandleTypeDef huart1;
+
+//TODO: need to uncomment these functions.  
 
 // TODO: Update all comment BLOCKS!!
 // TODO: Reference console.c
@@ -33,7 +35,7 @@ extern UART_HandleTypeDef huart1;
 * @param: Void passed in
 * @retval None
 */
-void MainMenu(uart_type * uart);
+// void MainMenu(uart_type * uart);
 
 
 // /**
@@ -41,14 +43,14 @@ void MainMenu(uart_type * uart);
 // * @param: Void passed in
 // * @retval uint8_t
 // */
-uint8_t getNumber_u8 (uart_type * uart);
+// uint8_t getNumber_u8 (uart_type * uart);
 
 // /**
 // * @brief Get float number from user
 // * @param: Void passed in
 // * @retval User-defined float value
 // */
-float getNumber_float (uart_type * uart);
+// float getNumber_float (uart_type * uart);
 
 #endif
 /* END OF FILE */

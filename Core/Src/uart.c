@@ -191,7 +191,7 @@ void HandleByte(uart_type * ut) {
             else if(ut->rxbuf[ut -> consumer_index] == 'z') {     //User wishes to run calibration routine
                 ut->inmenu = true;                      //Set this flag so that we don't mess up the rxbuffer
                 ResetRxBuffer(ut);                            //Reset this because messaging handling didn't occur while calibrating
-                MainMenu(ut);                         //Run the calibration routine
+                // TODO: NEED TO PUT THIS BACK IN --> MainMenu(ut);                         //Run the calibration routine
                 ut->inmenu = false;                     //Clear this now that the sensors have been calibrated
             }
             else {

@@ -27,8 +27,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-extern uart_type        uart; 
-extern timing_type      tim;
+uart_type        uart; 
+timing_type      tim;
 
 /* USER CODE END PTD */
 
@@ -119,58 +119,25 @@ int main(void)
      * Message handling
      */
     if (uart.byte_counter >= MAX_RX_BUF_INDEX) {
-      ResetRxBuffer(uart);                        //Something went wrong, reset the RX buffer.
+      ResetRxBuffer(& uart);                        //Something went wrong, reset the RX buffer.
     }
     else if(uart.consumer_index != uart.producer_index) {             //We have unprocessed data when indices do not agree
       HandleByte(& uart);
     }
 
-
-
-
-
-    //TODO: we should never get here ... Delete?
-    // if(uart.validmsg == true) {     //A valid message confirmed in buffer
-    //     uart.validmsg = false;      //Avoid diving into ProcessMessage for no reason
-    //     ProcessMessage(& uart);
-    // }
-
-    // if(tim.timer_100ms_running && ((tim.timer_100ms_cntr) >= FUSE_100MS_TICKS_TIMEOUT)) {
-    //   anlg_sw_all_off();
-    //   fus.fuse_lighting_bool = false;
-    //   tim.timer_100ms_running = false;
-    //   tim.timer_100ms_cntr = 0;
-
-    // }
-
-
     if(tim.flag_10ms_tick) {
       tim.flag_10ms_tick = false;
     }
 
-    // if(tim.flag_100ms_tick) {
-    // tim.flag_100ms_tick = false;
-    // if(fus.fuse_lighting_bool) {
-    //   HAL_GPIO_TogglePin(EXT_LED_2_GPIO_Port, EXT_LED_2_Pin); // External RED LED
-    // }
-    // else {
-    //   HAL_GPIO_WritePin(EXT_LED_2_GPIO_Port,EXT_LED_2_Pin, GPIO_PIN_RESET);
-    // }
+    if(tim.flag_100ms_tick) {
+    tim.flag_100ms_tick = false;
+    }
     
-    /* If all fuses are bad, illuminate the amber LED */
-    // if(fus.all_fuses_bad_bool){
-    //   HAL_GPIO_TogglePin(EXT_LED_3_GPIO_Port, EXT_LED_3_Pin); // External Amber LED
-    // }
-    // else {
-    //   HAL_GPIO_WritePin(EXT_LED_3_GPIO_Port, EXT_LED_3_Pin, GPIO_PIN_RESET);
-    // }
 	  
 
     if(tim.flag_500ms_tick) {
       tim.flag_500ms_tick = false;
-      // TODO: need to toggle the health LED here.  
-      // HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
-      // HAL_GPIO_TogglePin(EXT_LED_1_GPIO_Port, EXT_LED_1_Pin); // External GRN LED
+      HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
     }
 
 
@@ -350,12 +317,24 @@ static void MX_USART1_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 /* USER CODE BEGIN MX_GPIO_Init_1 */
 /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : HLTH_LED_Pin */
+  GPIO_InitStruct.Pin = HLTH_LED_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(HLTH_LED_GPIO_Port, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -421,13 +400,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  *  @brief Handle UART RX interrupts
  ***********************************************/
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	// uart_type uart;
-
-  /**
-   * Console UART Interface
-   * 
-   */
   if(huart == &huart1) {
+    
     uart.rxbuf[uart.producer_index] = uart.rxchar;          // Load this byte into rx buffer
     uart.byte_counter++;                                                   //Increase data counter
     (uart.producer_index >= MAX_RX_BUF_INDEX) ? (uart.producer_index = 0):(uart.producer_index++);       
