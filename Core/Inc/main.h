@@ -38,24 +38,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-//TODO: we should be able to remove this
-// typedef struct uart_type{
-//     char        rxbuf[MAX_ELEMENTS];            // Ring buffer for serial receiver
-//     char        rxchar;                         // Supported mainly for calibration routine 
-//     uint8_t     producer_index;                 // Use this to point to where the next received data byte shall go
-//     uint8_t     consumer_index;                 // Use this as the consumer of data in the buffer
-//     uint8_t     data_index;                     // Location where message data starts
-//     uint8_t     data_end;                       // Location where message data ends    
-//     uint8_t     msg_state;                      // Keep track of what state we are in
-//     uint8_t     msg_len;                        // Keep track of the message length field
-//     uint8_t     byte_counter;                   // Additional variable for tracking number of bytes that are needing to be processed
-//     uint8_t     len_verify;                     // Used to validate length byte received
-//     uint8_t     msg_id;                         // Store the ID of the message
-
-//     bool        errorflag;                      // Currently used to indicate out-of-bounds range request on power 10 lookup table
-//     bool        validmsg;                       // Flag to mark that a valid message has been received
-//     bool        inmenu;                         // This flag will indicate if we're in the menu
-// } uart_type;
 
 
 /* USER CODE END ET */
@@ -64,15 +46,31 @@ extern "C" {
 /* USER CODE BEGIN EC */
 #define SW_VER_STR                  "0.0.1"             // SW Version String
 
-// #define DEFAULT_FUSE_CURRENT_MA     50                  // Default fuse current in mA 
-// #define CHECK_VALUE_FUSE_CURRENT_MA 300
-// #define GOOD_FUSE_MV_THRESHOLD      80                  // Voltage threshold in mA
-// #define FUSE_100MS_TICKS_TIMEOUT    30                  // Number of 100ms counts before shutting active fuses off
 
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+
+typedef enum
+{
+  IDLE,
+  LEFT_TURN,
+  RIGHT_TURN
+}state;
+
+typedef struct button_state {
+  uint8_t left_turn_debounce_counter;
+  uint8_t right_turn_debounce_counter;
+  uint8_t quick_flash_counts;
+
+  
+  bool  left_turn_active;
+  bool  right_turn_active;
+  bool  no_turn_active;
+
+} button_state;
+
 
 /* USER CODE END EM */
 
@@ -80,6 +78,10 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+
+void init_button_states ( void ); 
+
+void check_button_states( void ); 
 
 /* USER CODE END EFP */
 
@@ -90,8 +92,28 @@ void Error_Handler(void);
 #define OSC_OUT_GPIO_Port GPIOD
 #define HLTH_LED_Pin GPIO_PIN_0
 #define HLTH_LED_GPIO_Port GPIOC
+#define RIGHT_TURN_GPI_Pin GPIO_PIN_6
+#define RIGHT_TURN_GPI_GPIO_Port GPIOA
+#define LEFT_TURN_GPI_Pin GPIO_PIN_5
+#define LEFT_TURN_GPI_GPIO_Port GPIOC
+#define RT_nLT_TTL_Pin GPIO_PIN_12
+#define RT_nLT_TTL_GPIO_Port GPIOB
+#define EN_LIGHTS_TTL_Pin GPIO_PIN_13
+#define EN_LIGHTS_TTL_GPIO_Port GPIOB
+#define SW_FLASHER_TTL_Pin GPIO_PIN_14
+#define SW_FLASHER_TTL_GPIO_Port GPIOB
+#define TAILLIGHT_FLASHER_TTL_Pin GPIO_PIN_15
+#define TAILLIGHT_FLASHER_TTL_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+
+#define BUTTON_DEBOUNCE_MSX10   20    // 20*10 = 200 ms of debounce time
+
+/**
+ * Maximum number of times the turn signal will rapidly 
+ * blink before going into a normal blink pattern 
+ */
+#define MAX_NUM_OF_QUICK_FLASHES  100   
 
 /* USER CODE END Private defines */
 

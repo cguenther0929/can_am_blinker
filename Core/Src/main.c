@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "main.h"
 
 /* USER CODE END Includes */
 
@@ -29,6 +30,7 @@
 /* USER CODE BEGIN PTD */
 uart_type        uart; 
 timing_type      tim;
+button_state     but;
 
 /* USER CODE END PTD */
 
@@ -90,6 +92,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+  /* Initialize UART properties */
   uart.errorflag      = false;
   uart.validmsg       = false;
   uart.msg_state      = STATESTART;
@@ -97,6 +100,10 @@ int main(void)
   uart.producer_index = 0;                        // Initialize consumer index
   uart.consumer_index = 0;                        // Initialize producer index
   uart.inmenu         = false;                    // Will not start out in console menu
+  
+  /* Initialize STATE properties */
+  state blinker_state = IDLE;
+  
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -127,24 +134,51 @@ int main(void)
 
     if(tim.flag_10ms_tick) {
       tim.flag_10ms_tick = false;
+      check_button_states();
     }
 
     if(tim.flag_100ms_tick) {
-    tim.flag_100ms_tick = false;
+      tim.flag_100ms_tick = false;
+      
+      /**
+       * We haven't hit the max "quick flash" count total
+       * but we are turning 
+       **/
+      if(but.quick_flash_counts < MAX_NUM_OF_QUICK_FLASHES &&
+        state.blinker_state != IDLE) {
+        if (state.blinker_state == LEFT_TURN) {
+          HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);  
+        }
+        else if (state.blinker_state == RIGHT_TURN) {
+          HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);  
+        }
+        
+        but.quick_flash_counts++;
+      }
+
     }
-    
 	  
 
     if(tim.flag_500ms_tick) {
       tim.flag_500ms_tick = false;
       HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
+
+      /**
+       * The switch flash rate is always at this rate
+       * It will only flash if the switch is in the correct position
+       * thus this output can continuously toggle
+       **/
+      HAL_GPIO_TogglePin(SW_FLASHER_TTL_GPIO_Port, SW_FLASHER_TTL_Pin);   // Board LED
+    
+
+
+
     }
 
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
   /* USER CODE END 3 */
 }
 
@@ -325,9 +359,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, RT__LT_TTL_Pin|EN_LIGHTS_TTL_Pin|SW_FLASHER_TTL_Pin|TAILLIGHT_FLASHER_TTL_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : HLTH_LED_Pin */
   GPIO_InitStruct.Pin = HLTH_LED_Pin;
@@ -335,6 +373,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(HLTH_LED_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : RIGHT_TURN_GPI_Pin */
+  GPIO_InitStruct.Pin = RIGHT_TURN_GPI_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(RIGHT_TURN_GPI_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LEFT_TURN_GPI_Pin */
+  GPIO_InitStruct.Pin = LEFT_TURN_GPI_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(LEFT_TURN_GPI_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : RT__LT_TTL_Pin EN_LIGHTS_TTL_Pin SW_FLASHER_TTL_Pin TAILLIGHT_FLASHER_TTL_Pin */
+  GPIO_InitStruct.Pin = RT__LT_TTL_Pin|EN_LIGHTS_TTL_Pin|SW_FLASHER_TTL_Pin|TAILLIGHT_FLASHER_TTL_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -346,6 +403,8 @@ static void MX_GPIO_Init(void)
 *  @brief Initialize timer events 
 ***********************************************/
 void init_timer (timing_type * tim) {
+  //TODO: I think the dot operator might just work here 
+  //TODO: since tim is global above? 
   tim -> led_fast_blink = false;
   tim -> flag_10ms_tick = false;
   tim -> flag_100ms_tick = false;
@@ -356,6 +415,69 @@ void init_timer (timing_type * tim) {
 
   tim -> timer_100ms_running = false;
   tim -> timer_100ms_cntr = 0;
+
+}
+
+/********************************************//**
+*  @brief Initialize button properties 
+***********************************************/
+void init_button_states (button_state * but) {
+  but.left_turn_active   = false;
+  but.right_turn_active  = false;
+
+  but.left_turn_debounce_counter = 0;
+  but.right_turn_debounce_counter = 0;
+}
+
+/**********************************************
+ *  @brief Function for checking switch status   
+ ***********************************************/
+void check_button_states( void) {
+  /* Case where button is in neutral position */
+  if(!HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin) && 
+    !HAL_GPIO_ReadPin(RIGHT_TURN_GPI_GPIO_Port, RIGHT_TURN_GPI_Pin)) {
+
+    but.left_turn_debounce_counter  = 0;
+    but.right_turn_debounce_counter = 0;
+    but.quick_flash_counts          = 0;
+
+    /* Set the state to idle */
+    state.blinker_state = IDLE;
+    
+    /* Verify the outputs are inactive */
+    HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, false);
+    HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, false);
+  
+  }
+  /* Case when left or right turn request is made */
+  else {
+    if(HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin)){
+      but.left_turn_debounce_counter ++;
+    }
+    if(HAL_GPIO_ReadPin(RIGHT_TURN_GPI_GPIO_Port, RIGHT_TURN_GPI_Pin)){
+      but.right_turn_debounce_counter ++;
+    }
+  }
+
+  if(but.left_turn_debounce_counter >= BUTTON_DEBOUNCE_MSX10){
+    but.left_turn_active = true;
+    but.right_turn_debounce_counter = 0;
+    state.blinker_state = LEFT_TURN;
+    
+    /* Define pin states to correctly illuminate the taillight flasher */
+    HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, true);
+    HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
+
+  }
+  else if (but.right_turn_debounce_counter >= BUTTON_DEBOUNCE_MSX10) {
+    but.right_turn_active = true;
+    but.left_turn_debounce_counter = 0;
+    state.blinker_state = RIGHT_TURN;
+
+    /* Define pin states to correctly illuminate the taillight flasher */
+    HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, true);
+    HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, false);
+  }
 
 }
 
@@ -408,6 +530,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		HAL_UART_Receive_IT(&huart1, &uart.rxchar, 1);
 	}
 }
+
 /* USER CODE END 4 */
 
 /**

@@ -24,7 +24,7 @@
 // typedef struct uart_type        uart
 // struct uart_type        uart; 
 
-extern UART_HandleTypeDef huart1;
+// extern UART_HandleTypeDef huart1;
 
 //TODO: need to uncomment these functions.  
 
