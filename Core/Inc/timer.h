@@ -42,34 +42,12 @@ typedef struct timing_type {
 
 } timing_type;
 
-/**
- * TODO NEED TO COMMENT
-//  */
-// void blocking_us_delay (uint16_t us);
 
 /**
  * @brief
  * TODO need to comment
  */
-// void start_us_counter ( void );
-
-/**
- * @brief
- * TODO need to comment
- */
-// void stop_us_counter ( void );
-
-/**
- * @brief
- * TODO need to comment
- */
-// uint16_t get_us_counter ( void );
-
-/**
- * @brief
- * TODO need to comment
- */
-void init_timer (timing_type * tim);
+void init_timer ( void );
 
 
 #endif /* INC_TIMER_H_ */

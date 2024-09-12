@@ -11,7 +11,7 @@
 // timing       tim;               // Struct for all things timing related
 
 extern uart_type        ut;
-extern timing_type       tim;
+extern timing_type      tim;
 
 void print_float (float number, uint8_t action) {
     char temp_buffer[8];        //Define the array that will hold the ASCII values
