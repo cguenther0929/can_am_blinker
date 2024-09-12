@@ -13,6 +13,8 @@
   * the "License"; You may not use this file except in compliance with the
   * License. You may obtain a copy of the License at:
   *                        opensource.org/licenses/BSD-3-Clause
+  * 
+  * TODO: Need to enable the watchdog!
   *
   ******************************************************************************
   */
@@ -171,6 +173,12 @@ int main(void)
       tim.flag_500ms_tick = false;
       HAL_GPIO_TogglePin(HLTH_LED_GPIO_Port, HLTH_LED_Pin);   // Board LED
 
+      
+      /**
+       * Elsewhere, the lights are "disabled" if 
+       * the system is in the idle state
+       */
+      
       /**
        * The switch flash rate is always at this rate
        * It will only flash if the switch is in the correct position

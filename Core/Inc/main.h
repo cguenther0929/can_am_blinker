@@ -44,7 +44,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define SW_VER_STR                  "0.0.1"             // SW Version String
+#define SW_VER_STR                  "0.0.4"             // SW Version String
 
 
 /* USER CODE END EC */

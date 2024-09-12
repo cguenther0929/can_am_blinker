@@ -312,7 +312,8 @@ void MainMenu(uart_type * ut) {
      * 
      */
 
-	uint8_t     usr_number_u8           = 0;        // Number user has entered will be stored here
+	uint8_t     temp_counter            = 0;
+    uint8_t     usr_number_u8           = 0;        // Number user has entered will be stored here
     float       temp_float              = 0.0;
     
     ut->rxchar = '\0';                  
@@ -326,9 +327,10 @@ void MainMenu(uart_type * ut) {
     while(usr_number_u8 != 99) {
         InsertLineFeed(1);
         InsertLineSeparator();
-        print_string("1 --- Not implemented1...",LF);
-        print_string("2 --- Not implemented2...",LF);
-        print_string("3 --- Print SW version.",LF);
+        print_string("1 --- Flash RIGHT Taillight.",LF);
+        print_string("2 --- Flash LEFT Taillight.",LF);
+        print_string("3 --- Flash LEFT Taillight.",LF);
+        print_string("4 --- Print SW version.",LF);
         
         InsertLineFeed(1);
         
@@ -343,34 +345,98 @@ void MainMenu(uart_type * ut) {
 
        
         switch(usr_number_u8) {
-            /* Note implemented 1 */
+            /* Flash the RIGHT taillight */
             case 1:
                 InsertLineFeed(1);
                 InsertLineSeparator();
-                print_string("Need to implement something here...",0);
-                temp_float = getNumber_float(ut);
+                print_string("Flashing RIGHT taillight...",0);
+                
+                /**
+                 * Enable the RIGHT taillight
+                 */
+                HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, true);
+                HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
+                
+                for (temp_counter=0;temp_counter < 5; temp_counter++)
+                {
+                    HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);
+                    HAL_Delay(500);         //Delay value is in ms
+                }
+                
+                /**
+                 * Safely disable the taillight 
+                 */
+                HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, false);
+                HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
+                
                 InsertLineFeed(1);
-                print_string("Now I'm leaving...",0);
-                print_float(temp_float,LF);
 
-            	// dac_data_value = get_dac_data_value (temp_float);
-                // HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (uint32_t)dac_data_value);
             break;
             
-            /* Note implemented 2 */
+            /* Flash the LEFT taillight */
             case 2:
                 InsertLineFeed(1);
                 InsertLineSeparator();
-                print_string("Need to implement something here...",0);
-
-            	// dac_data_value = get_dac_data_value (temp_float);
+                print_string("Flashing LEFT taillight...",0);
                 
-                // HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, (uint32_t)dac_data_value);
+                /**
+                 * Enable the LEFT taillight
+                 */
+                HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, true);
+                HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, false);
+                
+                /**
+                 * Flash the light a few times
+                 */
+                for (temp_counter=0; temp_counter < 5; temp_counter++)
+                {
+                    HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);
+                    HAL_Delay(500);         //Delay value is in ms
+                }
+                
+                /**
+                 * Safely disable the taillight 
+                 */
+                HAL_GPIO_WritePin(EN_LIGHTS_TTL_GPIO_Port, EN_LIGHTS_TTL_Pin, false);
+                HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
+
+                InsertLineFeed(1);
             	
             break;
 
-            /* Print SW version */
+            /* View TS switch request value */
             case 3:
+                InsertLineFeed(1);
+                InsertLineSeparator();
+                print_string("Printing state of TS switch input.",LF);
+
+                for(temp_counter=0; temp_counter<10; temp_counter++)
+                {
+
+                    if (HAL_GPIO_ReadPin(RIGHT_TURN_GPI_GPIO_Port, RIGHT_TURN_GPI_Pin))
+                    {
+                        print_string("Switch is requesting -> RIGHT <- ",LF);
+                    }
+
+                    else if (HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin))
+                    {
+                        print_string("Switch is requesting -> LEFT <- ",LF);
+                    }
+
+                    else 
+                    {
+                        print_string("Switch is requesting -> IDLE <- ",LF);
+                    }
+
+                    HAL_Delay(500);
+                }
+                
+                InsertLineFeed(1);
+
+            break;
+            
+            /* Print SW version */
+            case 4:
                 InsertLineFeed(1);
                 InsertLineSeparator();
                 

@@ -16,3 +16,5 @@ Bare metal -- application written in C.
 * v0.0.3 -- CLI stuff was added back in and the solution compiles.  To obviate compilation errors,console functions were added to uart files (pulled from console files).
 
 * v0.0.4 -- A good amount of blinker logic has been added in and the source compiles.  
+
+* v0.0.5 -- Debug menu items were added and the code compiles.  
