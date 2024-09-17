@@ -18,3 +18,5 @@ Bare metal -- application written in C.
 * v0.0.4 -- A good amount of blinker logic has been added in and the source compiles.  
 
 * v0.0.5 -- Debug menu items were added and the code compiles.  
+
+* v0.0.6 -- Support for the watchdog has been added in.  The dog is kicked in many places within the menu.  This code compiles in STM32 Cube IDE.
