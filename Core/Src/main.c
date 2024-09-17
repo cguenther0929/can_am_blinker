@@ -49,6 +49,8 @@ state blinker_state = IDLE;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+IWDG_HandleTypeDef hiwdg;
+
 TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim6;
 
@@ -64,6 +66,7 @@ static void MX_GPIO_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM6_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -114,6 +117,7 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM6_Init();
   MX_USART1_UART_Init();
+  MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
   init_timer ();
@@ -146,6 +150,9 @@ int main(void)
 
     if(tim.flag_100ms_tick) 
     {
+      //TODO: need to suspend the watchdog (or refresh) this in the main menu
+    	HAL_IWDG_Refresh(&hiwdg);  // Refresh the watchdog.
+
       tim.flag_100ms_tick = false;
       
       /**
@@ -212,10 +219,11 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV2;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.Prediv1Source = RCC_PREDIV1_SOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -243,6 +251,34 @@ void SystemClock_Config(void)
   /** Configure the Systick interrupt time
   */
   __HAL_RCC_PLLI2S_ENABLE();
+}
+
+/**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
+  hiwdg.Init.Reload = 12;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
+
 }
 
 /**
@@ -404,7 +440,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(LEFT_TURN_GPI_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RT__LT_TTL_Pin EN_LIGHTS_TTL_Pin SW_FLASHER_TTL_Pin TAILLIGHT_FLASHER_TTL_Pin */
+  /*Configure GPIO pins : RT_nLT_TTL_Pin EN_LIGHTS_TTL_Pin SW_FLASHER_TTL_Pin TAILLIGHT_FLASHER_TTL_Pin */
   GPIO_InitStruct.Pin = RT_nLT_TTL_Pin|EN_LIGHTS_TTL_Pin|SW_FLASHER_TTL_Pin|TAILLIGHT_FLASHER_TTL_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
