@@ -257,12 +257,15 @@ uint8_t getNumber_u8 (uart_type * ut ) {
     ResetRxBuffer(ut);
     
     ut->rxchar = '\0';
-    while(ut->rxchar == '\0'){}                   // Wait for keyboard input 
+    while(ut->rxchar == '\0'){
+        HAL_IWDG_Refresh(&hiwdg);       //TODO: do we need there anywhere else?
+    }                   // Wait for keyboard input 
     
     while (timeout < 20) {
         if(ut->rxchar == ENTER_KEY) break;
 
         HAL_Delay(100);          // Delay in ms 
+        HAL_IWDG_Refresh(&hiwdg);
         timeout++;
     }
 
@@ -341,8 +344,9 @@ void MainMenu(uart_type * ut) {
         InsertLineFeed(2);
         
         print_string("Enter Selection:  ",0);
+        HAL_IWDG_Refresh(&hiwdg);
+        
         usr_number_u8 = getNumber_u8(ut);
-
        
         switch(usr_number_u8) {
             /* Flash the RIGHT taillight */
@@ -350,6 +354,7 @@ void MainMenu(uart_type * ut) {
                 InsertLineFeed(1);
                 InsertLineSeparator();
                 print_string("Flashing RIGHT taillight...",0);
+                HAL_IWDG_Refresh(&hiwdg);
                 
                 /**
                  * Enable the RIGHT taillight
@@ -361,6 +366,7 @@ void MainMenu(uart_type * ut) {
                 {
                     HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);
                     HAL_Delay(500);         //Delay value is in ms
+                    HAL_IWDG_Refresh(&hiwdg);
                 }
                 
                 /**
@@ -370,6 +376,7 @@ void MainMenu(uart_type * ut) {
                 HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
                 
                 InsertLineFeed(1);
+                HAL_IWDG_Refresh(&hiwdg);
 
             break;
             
@@ -378,6 +385,7 @@ void MainMenu(uart_type * ut) {
                 InsertLineFeed(1);
                 InsertLineSeparator();
                 print_string("Flashing LEFT taillight...",0);
+                HAL_IWDG_Refresh(&hiwdg);
                 
                 /**
                  * Enable the LEFT taillight
@@ -392,6 +400,7 @@ void MainMenu(uart_type * ut) {
                 {
                     HAL_GPIO_TogglePin(TAILLIGHT_FLASHER_TTL_GPIO_Port, TAILLIGHT_FLASHER_TTL_Pin);
                     HAL_Delay(500);         //Delay value is in ms
+                    HAL_IWDG_Refresh(&hiwdg);
                 }
                 
                 /**
@@ -401,6 +410,7 @@ void MainMenu(uart_type * ut) {
                 HAL_GPIO_WritePin(RT_nLT_TTL_GPIO_Port, RT_nLT_TTL_Pin, true);
 
                 InsertLineFeed(1);
+                HAL_IWDG_Refresh(&hiwdg);
             	
             break;
 
@@ -409,6 +419,7 @@ void MainMenu(uart_type * ut) {
                 InsertLineFeed(1);
                 InsertLineSeparator();
                 print_string("Printing state of TS switch input.",LF);
+                HAL_IWDG_Refresh(&hiwdg);
 
                 for(temp_counter=0; temp_counter<10; temp_counter++)
                 {
@@ -432,6 +443,7 @@ void MainMenu(uart_type * ut) {
                 }
                 
                 InsertLineFeed(1);
+                HAL_IWDG_Refresh(&hiwdg);
 
             break;
             
@@ -442,6 +454,7 @@ void MainMenu(uart_type * ut) {
                 
                 print_string("SW Version:",0);
                 print_string(SW_VER_STR,LF);
+                HAL_IWDG_Refresh(&hiwdg);
 
             break;
 
@@ -451,6 +464,7 @@ void MainMenu(uart_type * ut) {
                 HAL_Delay(1);
                 CursorTopLeft();        //Make sure the cursor is in the Top Left position
                 HAL_Delay(1);
+                HAL_IWDG_Refresh(&hiwdg);
                 usr_number_u8 = 99;
             break;
 

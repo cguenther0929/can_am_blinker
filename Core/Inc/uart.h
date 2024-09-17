@@ -42,6 +42,7 @@ typedef struct uart_type{
 
 #include "stm32f1xx_hal.h"
 extern UART_HandleTypeDef   huart1;
+extern IWDG_HandleTypeDef   hiwdg;
 
 
 // TODO: Cleanup comment blocks and header def
