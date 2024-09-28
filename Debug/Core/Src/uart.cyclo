@@ -12,7 +12,7 @@
 ../Core/Src/uart.c:169:6:InsertLineSeparator	1
 ../Core/Src/uart.c:173:6:ResetRxBuffer	1
 ../Core/Src/uart.c:180:6:HandleByte	4
-../Core/Src/uart.c:245:6:IncrementConsumer	3
-../Core/Src/uart.c:253:9:getNumber_u8	4
-../Core/Src/uart.c:281:7:getNumber_float	4
-../Core/Src/uart.c:309:6:MainMenu	14
+../Core/Src/uart.c:243:6:IncrementConsumer	3
+../Core/Src/uart.c:248:9:getNumber_u8	4
+../Core/Src/uart.c:276:7:getNumber_float	4
+../Core/Src/uart.c:301:6:MainMenu	16

@@ -61,7 +61,7 @@ main-build: can_am_blinker_controller.elf secondary-outputs
 
 # Tool invocations
 can_am_blinker_controller.elf can_am_blinker_controller.map: $(OBJS) $(USER_OBJS) C:\Users\Neal\ Quackenbush\STM32CubeIDE\workspace_1.6.1\can_am_blinker_controller\STM32F105RBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "can_am_blinker_controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Neal Quackenbush\STM32CubeIDE\workspace_1.6.1\can_am_blinker_controller\STM32F105RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="can_am_blinker_controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "can_am_blinker_controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\Neal Quackenbush\STM32CubeIDE\workspace_1.6.1\can_am_blinker_controller\STM32F105RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="can_am_blinker_controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

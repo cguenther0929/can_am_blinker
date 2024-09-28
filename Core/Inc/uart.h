@@ -42,8 +42,7 @@ typedef struct uart_type{
 
 #include "stm32f1xx_hal.h"
 extern UART_HandleTypeDef   huart1;
-extern IWDG_HandleTypeDef   hiwdg;
-
+extern IWDG_HandleTypeDef   hiwdg; 
 
 // TODO: Cleanup comment blocks and header def
 // TODO:  see console.c or .h
@@ -229,32 +228,5 @@ float getNumber_float (uart_type * uart);
 */
 void MainMenu(uart_type * uart);
 
-
-
-
-
-//TODO: remove?  
-/*
- * Function: void ProcessMessage( void )
- * --------------------
- * This function will execute upon the HandleByte
- * stat machine determining a full and valid message 
- * has been received.  
- *
- * returns: Nothing 
- */
-// void ProcessMessage(* uart); 
-
-//TODO: remove? 
-// void xbee_send_ack( void );
-
-//TODO: remove? 
-// void xbee_tx(const char *y);
-
-//TODO: remove?
-// uint8_t Pow10LU(uint8_t power);
-
-//TODO: remove?  
-// void dec_to_bcd(uint32_t in_val, char bcd_array[], uint8_t * pSizeBCD);
 
 #endif /* INC_UART_H_ */

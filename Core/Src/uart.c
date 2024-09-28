@@ -178,8 +178,6 @@ void ResetRxBuffer(uart_type * ut) {
 } /* End of ResetRxBuffer */
 
 void HandleByte(uart_type * ut) {     
-
-    
     
     switch(ut->msg_state) {
         case(STATESTART):                                   //Have yet to receive a valid SOF
@@ -247,9 +245,6 @@ void IncrementConsumer(uart_type * ut) {
     (ut->byte_counter <= 1) ? (ut->byte_counter = 0):(ut->byte_counter--);                                           //Decrement data counter
 } /* End of IncrementConsumer */
 
-
-
-
 uint8_t getNumber_u8 (uart_type * ut ) {
     int number      = 0;
     uint8_t timeout     = 0;
@@ -258,7 +253,7 @@ uint8_t getNumber_u8 (uart_type * ut ) {
     
     ut->rxchar = '\0';
     while(ut->rxchar == '\0'){
-        HAL_IWDG_Refresh(&hiwdg);       //TODO: do we need there anywhere else?
+        HAL_IWDG_Refresh(&hiwdg);      
     }                   // Wait for keyboard input 
     
     while (timeout < 20) {
@@ -303,9 +298,6 @@ float getNumber_float(uart_type * ut) {
 
 }
 
-
-
-
 void MainMenu(uart_type * ut) {
     /*
      * This routine will be using the same buffer as what's 
@@ -332,7 +324,7 @@ void MainMenu(uart_type * ut) {
         InsertLineSeparator();
         print_string("1 --- Flash RIGHT Taillight.",LF);
         print_string("2 --- Flash LEFT Taillight.",LF);
-        print_string("3 --- Flash LEFT Taillight.",LF);
+        print_string("3 --- View Toggle Switch State.",LF);
         print_string("4 --- Print SW version.",LF);
         
         InsertLineFeed(1);
@@ -429,17 +421,20 @@ void MainMenu(uart_type * ut) {
                         print_string("Switch is requesting -> RIGHT <- ",LF);
                     }
 
-                    else if (HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin))
+                    if (HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin))
                     {
                         print_string("Switch is requesting -> LEFT <- ",LF);
                     }
 
-                    else 
+                    if( !HAL_GPIO_ReadPin(RIGHT_TURN_GPI_GPIO_Port, RIGHT_TURN_GPI_Pin) &&
+                        !HAL_GPIO_ReadPin(LEFT_TURN_GPI_GPIO_Port, LEFT_TURN_GPI_Pin)
+                    ) 
                     {
                         print_string("Switch is requesting -> IDLE <- ",LF);
                     }
 
                     HAL_Delay(500);
+                    HAL_IWDG_Refresh(&hiwdg);
                 }
                 
                 InsertLineFeed(1);

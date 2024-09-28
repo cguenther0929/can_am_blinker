@@ -44,7 +44,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define SW_VER_STR                  "0.0.4"             // SW Version String
+#define SW_VER_STR                  "0.0.7"             // SW Version String
 
 
 /* USER CODE END EC */
@@ -92,8 +92,6 @@ void check_button_states( void );
 #define OSC_OUT_GPIO_Port GPIOD
 #define HLTH_LED_Pin GPIO_PIN_0
 #define HLTH_LED_GPIO_Port GPIOC
-#define RIGHT_TURN_GPI_Pin GPIO_PIN_6
-#define RIGHT_TURN_GPI_GPIO_Port GPIOA
 #define LEFT_TURN_GPI_Pin GPIO_PIN_5
 #define LEFT_TURN_GPI_GPIO_Port GPIOC
 #define RT_nLT_TTL_Pin GPIO_PIN_12
@@ -104,6 +102,8 @@ void check_button_states( void );
 #define SW_FLASHER_TTL_GPIO_Port GPIOB
 #define TAILLIGHT_FLASHER_TTL_Pin GPIO_PIN_15
 #define TAILLIGHT_FLASHER_TTL_GPIO_Port GPIOB
+#define RIGHT_TURN_GPI_Pin GPIO_PIN_6
+#define RIGHT_TURN_GPI_GPIO_Port GPIOC
 
 /* USER CODE BEGIN Private defines */
 
@@ -113,7 +113,7 @@ void check_button_states( void );
  * Maximum number of times the turn signal will rapidly 
  * blink before going into a normal blink pattern 
  */
-#define MAX_NUM_OF_QUICK_FLASHES  100   
+#define MAX_NUM_OF_QUICK_FLASHES  10   
 
 /* USER CODE END Private defines */
 
