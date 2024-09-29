@@ -23,3 +23,4 @@ Bare metal -- application written in C.
 
 * v0.0.7 -- A handful of bugs were addressed and the algorithm was well tested.  This version is very close to a release candidate.  
 
+* v0.1.0 -- Fixed issue where watchdog was tripping too early.  The serial BAUD rate was changed back to 57600.  

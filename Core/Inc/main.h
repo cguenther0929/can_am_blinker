@@ -44,7 +44,7 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-#define SW_VER_STR                  "0.0.7"             // SW Version String
+#define SW_VER_STR                  "0.1.0"             // SW Version String
 
 
 /* USER CODE END EC */
@@ -113,7 +113,7 @@ void check_button_states( void );
  * Maximum number of times the turn signal will rapidly 
  * blink before going into a normal blink pattern 
  */
-#define MAX_NUM_OF_QUICK_FLASHES  10   
+#define MAX_NUM_OF_QUICK_FLASHES  20   
 
 /* USER CODE END Private defines */
 

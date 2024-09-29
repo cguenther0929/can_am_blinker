@@ -325,11 +325,10 @@ void MainMenu(uart_type * ut) {
         print_string("1 --- Flash RIGHT Taillight.",LF);
         print_string("2 --- Flash LEFT Taillight.",LF);
         print_string("3 --- View Toggle Switch State.",LF);
-        print_string("4 --- Print SW version.",LF);
         
         InsertLineFeed(1);
         
-        print_string("8 --- Get SW version information.",LF);
+        print_string("4 --- Get SW version information.",LF);
         
         print_string("99 -- Exit menu.",LF);  
         

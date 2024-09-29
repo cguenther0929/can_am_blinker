@@ -580,9 +580,9 @@ Disassembly of section .text:
  8000782:	e7fe      	b.n	8000782 <main+0x122>
  8000784:	2347      	movs	r3, #71	@ 0x47
  8000786:	4e4e      	ldr	r6, [pc, #312]	@ (80008c0 <main+0x260>)
- 8000788:	4c4e      	ldr	r4, [pc, #312]	@ (80008c4 <main+0x264>)
+ 8000788:	494e      	ldr	r1, [pc, #312]	@ (80008c4 <main+0x264>)
  800078a:	e9cd 0006 	strd	r0, r0, [sp, #24]
- 800078e:	e9c6 4300 	strd	r4, r3, [r6]
+ 800078e:	e9c6 1300 	strd	r1, r3, [r6]
  8000792:	f242 730f 	movw	r3, #9999	@ 0x270f
  8000796:	60f3      	str	r3, [r6, #12]
  8000798:	2380      	movs	r3, #128	@ 0x80
@@ -600,25 +600,25 @@ Disassembly of section .text:
  80007b6:	b108      	cbz	r0, 80007bc <main+0x15c>
  80007b8:	b672      	cpsid	i
  80007ba:	e7fe      	b.n	80007ba <main+0x15a>
- 80007bc:	f44f 5316 	mov.w	r3, #9600	@ 0x2580
+ 80007bc:	f44f 4361 	mov.w	r3, #57600	@ 0xe100
  80007c0:	4c41      	ldr	r4, [pc, #260]	@ (80008c8 <main+0x268>)
- 80007c2:	4942      	ldr	r1, [pc, #264]	@ (80008cc <main+0x26c>)
+ 80007c2:	4a42      	ldr	r2, [pc, #264]	@ (80008cc <main+0x26c>)
  80007c4:	e9c4 0002 	strd	r0, r0, [r4, #8]
- 80007c8:	e9c4 1300 	strd	r1, r3, [r4]
+ 80007c8:	e9c4 2300 	strd	r2, r3, [r4]
  80007cc:	230c      	movs	r3, #12
  80007ce:	6120      	str	r0, [r4, #16]
  80007d0:	e9c4 3005 	strd	r3, r0, [r4, #20]
  80007d4:	61e0      	str	r0, [r4, #28]
  80007d6:	4620      	mov	r0, r4
  80007d8:	f001 fc8a 	bl	80020f0 <HAL_UART_Init>
- 80007dc:	b108      	cbz	r0, 80007e2 <main+0x182>
- 80007de:	b672      	cpsid	i
- 80007e0:	e7fe      	b.n	80007e0 <main+0x180>
- 80007e2:	2305      	movs	r3, #5
+ 80007dc:	4603      	mov	r3, r0
+ 80007de:	b108      	cbz	r0, 80007e4 <main+0x184>
+ 80007e0:	b672      	cpsid	i
+ 80007e2:	e7fe      	b.n	80007e2 <main+0x182>
  80007e4:	483a      	ldr	r0, [pc, #232]	@ (80008d0 <main+0x270>)
  80007e6:	4a3b      	ldr	r2, [pc, #236]	@ (80008d4 <main+0x274>)
  80007e8:	e9c0 2300 	strd	r2, r3, [r0]
- 80007ec:	f640 73ff 	movw	r3, #4095	@ 0xfff
+ 80007ec:	f240 23ed 	movw	r3, #749	@ 0x2ed
  80007f0:	6083      	str	r3, [r0, #8]
  80007f2:	f000 fe9f 	bl	8001534 <HAL_IWDG_Init>
  80007f6:	b108      	cbz	r0, 80007fc <main+0x19c>
